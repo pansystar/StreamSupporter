@@ -21,6 +21,10 @@ class CustomWebSocketServer : WebSocketServer {
 
     lateinit var ipAddress: InetSocketAddress
 
+    public fun restart() {
+
+    }
+
     public fun sendMessage(json: JsonValue) {
         var list: ArrayList<WebSocket?> = ArrayList<WebSocket?>()
 
@@ -49,7 +53,7 @@ class CustomWebSocketServer : WebSocketServer {
     override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
 
         var json = JsonObject()
-        json["type"] = 0x8000001
+        json["type"] = 0x80000001
         json["message"] = "接続成功"
         conn?.send(json.toString())
         contextList.add(conn)
@@ -72,7 +76,7 @@ class CustomWebSocketServer : WebSocketServer {
     }
 
     override fun onError(conn: WebSocket?, ex: Exception?) {
-        print("Error")
+        mainActivity.findViewById<TextView>(R.id.logTextView).text = ex.toString()
     }
 
     override fun onStart() {
