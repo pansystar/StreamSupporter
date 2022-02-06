@@ -106,27 +106,40 @@ class MainActivity : AppCompatActivity(), SimpleRecognizerListener.SimpleRecogni
     override fun onResume() {
         super.onResume()
 
-        val ipAddress: String = getIPAddress()
-        val port = 8888
+        try {
 
-        if(ipAddress.isNotEmpty()) {
+            val ipAddress: String = getIPAddress()
+            val port = 8888
 
-            ShareData.serverIpAddress = ipAddress
-            ShareData.serverPort = port
+            if(ipAddress.isNotEmpty()) {
 
-            server = CustomWebSocketServer(InetSocketAddress(ipAddress, port), this)
+                ShareData.serverIpAddress = ipAddress
+                ShareData.serverPort = port
+                if(!::server.isInitialized) {
+                    server = CustomWebSocketServer(InetSocketAddress(ipAddress, port), this)
+                }
 
-            server.start()
-        } else {
-            findViewById<TextView>(R.id.logTextView).text = "鯖の作成に失敗しました。"
+                server.start()
+            } else {
+                findViewById<TextView>(R.id.logTextView).text = "鯖の作成に失敗しました。"
+            }
+        } catch (e: Exception){
+            print(e)
         }
+
+        VoiceRecognize.restartRecognize()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
     }
 
     override fun onDestroy() {
-
+        print("Destroy")
         server.stop()
-
         super.onDestroy()
+
     }
 
     override fun onError(p0: Int) {
