@@ -79,7 +79,11 @@ class SimpleRecognizerListener(private val listener: SimpleRecognizerResponseLis
             mResult.toArray(result)
         }
 
-        val finalResult: String = result!![0].toString()
+        var finalResult: String = ""
+
+        if(result?.isNotEmpty()!!){
+            finalResult = result!![0].toString()
+        }
 
         if(finalResult.isBlank()) {
             return
